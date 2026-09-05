@@ -1,0 +1,260 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 20px;
+}
+
+.header-inner {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: rgba(10, 10, 12, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: rgba(0, 0, 0, 0.12) 0 8px 24px -18px;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  transition:
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    padding 0.35s ease;
+}
+
+.header.is-scrolled .header-inner {
+  padding: 8px 12px;
+  background: rgba(9, 9, 11, 0.46);
+  box-shadow: rgba(0, 0, 0, 0.2) 0 10px 26px -16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.header-logo img {
+  height: 38px;
+  width: auto;
+  display: block;
+  transition: height 0.35s ease;
+}
+
+.header.is-scrolled .header-logo img {
+  height: 32px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-nav a {
+  position: relative;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.35s ease;
+}
+
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.25s ease;
+}
+
+.header-nav a:hover {
+  color: #fff;
+}
+
+.header-nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-cta {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  background: transparent;
+  padding: 9px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.header-cta:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+.header-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.header-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.header-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.85);
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.header-toggle.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.header-toggle.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.header-toggle.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 860px) {
+  .header-nav {
+    position: fixed;
+    inset: 86px 20px auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 16px;
+    background: rgba(10, 10, 12, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 16px 32px -18px;
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .header-nav.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .header-nav a {
+    color: rgba(255, 255, 255, 0.85);
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+
+  .header-nav a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .header-nav a::after {
+    display: none;
+  }
+
+  .header-toggle {
+    display: flex;
+  }
+}
+
+/* ---------- variante clara: el header flota sobre papel ---------- */
+
+.header-inner,
+.header-nav a,
+.header-cta,
+.header-toggle,
+.header-toggle span {
+  transition-property: background, border-color, color, box-shadow, padding;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
+}
+
+.header.is-light .header-inner {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(24, 25, 24, 0.09);
+  box-shadow: rgba(24, 25, 24, 0.07) 0 8px 24px -18px;
+}
+
+.header.is-light.is-scrolled .header-inner {
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: rgba(24, 25, 24, 0.12) 0 10px 26px -16px;
+}
+
+.header.is-light .header-nav a {
+  color: var(--ink-soft);
+}
+
+.header.is-light .header-nav a:hover {
+  color: var(--ink);
+}
+
+.header.is-light .header-cta {
+  color: var(--ink);
+  border-color: rgba(24, 25, 24, 0.22);
+}
+
+.header.is-light .header-cta:hover {
+  background: rgba(24, 25, 24, 0.06);
+  border-color: rgba(24, 25, 24, 0.42);
+}
+
+.header.is-light .header-toggle {
+  border-color: rgba(24, 25, 24, 0.14);
+}
+
+.header.is-light .header-toggle:hover {
+  background: rgba(24, 25, 24, 0.05);
+  border-color: rgba(24, 25, 24, 0.26);
+}
+
+.header.is-light .header-toggle span {
+  background: var(--ink);
+}

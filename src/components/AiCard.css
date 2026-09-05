@@ -1,0 +1,130 @@
+/* ---------------------------------------------------------------------------
+   AI / ML — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .uai-body {
+  display: grid;
+  grid-template-columns: var(--hud-col) minmax(0, 1fr);
+  gap: var(--hud-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .uai-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- clúster ---------- */
+
+.hudc .uai-scatter {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .uai-pt {
+  fill: rgba(24, 25, 24, 0.26);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* el oro sobre blanco no llega a leerse solo: el aro de tinta lo sostiene */
+.hudc .uai-pt[data-priority] {
+  fill: var(--hud-gold);
+  stroke: rgba(24, 25, 24, 0.55);
+  stroke-width: 0.7;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uai-pt {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+.hudc .uai-ring {
+  fill: none;
+  stroke: rgba(24, 25, 24, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 2 2.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hudc .uai-ring-label {
+  fill: var(--hud-faint);
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.16em;
+  text-anchor: middle;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uai-ring,
+.hudc:is(:hover, :focus-visible, :focus-within) .uai-ring-label {
+  opacity: 1;
+  transition-delay: 0.5s;
+}
+
+/* ---------- métrica central ---------- */
+
+/* ---------- feed de recomendaciones ---------- */
+
+.hudc .uai-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hudc .uai-feed li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  padding-left: 9px;
+  border-left: 2px solid var(--hud-gold);
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity var(--hud-ease),
+    transform var(--hud-ease);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uai-feed li {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: var(--d);
+}
+
+.hudc .uai-index {
+  font-family: var(--hud-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.42;
+  color: var(--hud-faint);
+}
+
+.hudc .uai-text {
+  font-size: 9.5px;
+  line-height: 1.35;
+  color: var(--hud-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .uai-pt,
+  .hudc .uai-ring,
+  .hudc .uai-ring-label,
+  .hudc .uai-feed li {
+    transition: none;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uai-feed li {
+    transform: none;
+  }
+}

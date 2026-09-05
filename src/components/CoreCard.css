@@ -1,0 +1,110 @@
+/* ---------------------------------------------------------------------------
+   ULISES CORE — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .uco-pipe {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .uco-rail {
+  fill: none;
+  stroke: var(--hud-rule);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.hudc .uco-pulse {
+  fill: none;
+  stroke: var(--hud-gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  /* pathLength=100 normaliza el recorrido, igual que en el eje del diagrama */
+  stroke-dasharray: 4 96;
+  stroke-dashoffset: 100;
+  opacity: 0;
+}
+
+.hudc .uco-pulse--halo {
+  stroke-width: 10;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uco-pulse {
+  opacity: 1;
+  animation: uco-run 2.6s linear infinite 0.4s;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uco-pulse--halo {
+  opacity: 0.22;
+}
+
+@keyframes uco-run {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hudc .uco-stage {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hudc .uco-stage circle {
+  fill: #fff;
+  stroke: var(--hud-ink);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.hudc .uco-stage text {
+  fill: var(--hud-soft);
+  font-family: var(--hud-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uco-stage {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+.hudc .uco-stats {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+}
+
+.hudc .uco-stats span {
+  display: grid;
+  gap: 3px;
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  color: var(--hud-faint);
+}
+
+.hudc .uco-stats b {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--hud-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .uco-stage {
+    transition: none;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uco-pulse,
+  .hudc:is(:hover, :focus-visible, :focus-within) .uco-pulse--halo {
+    animation: none;
+    opacity: 0;
+  }
+}

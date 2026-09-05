@@ -1,0 +1,303 @@
+/* ---------------------------------------------------------------------------
+   Chasis compartido de las tarjetas del rombo.
+
+   Todas las reglas van scopeadas bajo `.hudc`: la tarjeta se monta con la
+   clase del host (`.dg-module`), y sin ese scope reglas como `.dg-module p`
+   le ganan en especificidad y le pisan color y tamaño.
+
+   Los tokens llevan fallback, así el chasis funciona suelto o heredando del
+   diagrama. Para volver al panel oscuro basta con cambiar --hud-bg,
+   --hud-ink, --hud-soft, --hud-faint y --hud-rule.
+--------------------------------------------------------------------------- */
+
+.hudc {
+  --hud-w: 404px;
+  --hud-h: 172px;
+
+  --hud-bg: #fff;
+  --hud-ink: #181918;
+  --hud-soft: rgba(24, 25, 24, 0.58);
+  --hud-faint: rgba(24, 25, 24, 0.34);
+  --hud-rule: rgba(24, 25, 24, 0.11);
+  --hud-gold: #ffc800;
+  --hud-green: #2f9668;
+  --hud-red: #c8463d;
+
+  --hud-mono: var(--mono, ui-monospace, Consolas, monospace);
+  --hud-ease: 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* Escala compartida: aquí se ajusta cuánto ocupa cualquier panel. */
+  --hud-col: 152px; /* ancho de la columna del visual */
+  --hud-gap: 13px;
+  --hud-metric: 15px;
+}
+
+/* `:where` deja esta regla con especificidad 0, así que CUALQUIER regla del
+   host la pisa. Es lo que queremos: colocar la tarjeta es cosa del contenedor
+   (en el diagrama, `.dg-module` la pone en absolute sobre su vértice). Con
+   `.hudc { position: relative }` ambas empataban en (0,1,0) y decidía el orden
+   de carga del CSS — que cambia entre build y HMR, y volcaba las tarjetas. */
+:where(.hudc) {
+  position: relative;
+}
+
+/* ---------- reposo ---------- */
+
+.hudc .hudc-face {
+  transition: opacity 0.18s ease;
+}
+
+.hudc .hudc-face h3 {
+  font-family: var(--hud-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--ink, #181918);
+  margin: 0 0 5px;
+}
+
+.hudc .hudc-face p {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--ink-soft, rgba(24, 25, 24, 0.62));
+  margin: 0;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .hudc-face {
+  opacity: 0;
+}
+
+/* ---------- panel ---------- */
+
+.hudc .hudc-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: var(--hud-w);
+  height: var(--hud-h);
+  padding: 12px 13px 10px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 9px;
+
+  background: var(--hud-bg);
+  border: 1px solid rgba(24, 25, 24, 0.16);
+  border-radius: 11px;
+  /* el panel es claro y cae sobre tarjetas claras: sin una elevación franca
+     no se despega del fondo y se leen los textos de debajo asomando */
+  box-shadow:
+    rgba(24, 25, 24, 0.05) 0 1px 2px,
+    rgba(24, 25, 24, 0.16) 0 10px 20px -8px,
+    rgba(24, 25, 24, 0.44) 0 38px 68px -28px;
+
+  text-align: left;
+  color: var(--hud-ink);
+  /* :root define `font: 18px/145%` y el line-height se hereda ya calculado
+     (26.1px), así que sin esto cada etiqueta de 8px arrastra una caja de
+     línea de 26px y el panel pide 40px de más */
+  line-height: 1.4;
+
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.97);
+  pointer-events: none;
+  transition:
+    opacity var(--hud-ease),
+    transform var(--hud-ease);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .hudc-panel {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+/* La clase repetida sube la especificidad a (0,3,0) a propósito: aquí sí
+   tiene que ganar el chasis. `.dg-module:hover` fija z-index 4 con la misma
+   especificidad que tendría `.hudc:hover`, y según el orden de carga el panel
+   abierto quedaba por debajo de las tarjetas vecinas. */
+.hudc.hudc:is(:hover, :focus-visible, :focus-within) {
+  z-index: 40;
+}
+
+/* los dos ángulos de arriba, como única marca de instrumento */
+.hudc .hudc-corners {
+  position: absolute;
+  inset: 7px;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+  pointer-events: none;
+  fill: none;
+  stroke: var(--hud-gold);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.hudc .hudc-body {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- pie ---------- */
+
+.hudc .hudc-sys {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--hud-rule);
+  font-family: var(--hud-mono);
+  /* por debajo de 8px el antialiasing adelgaza el trazo hasta hacerlo
+     fantasma, aunque el contraste calculado dé bien */
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  color: var(--hud-faint);
+  white-space: nowrap;
+}
+
+.hudc .hudc-meta {
+  letter-spacing: 0.12em;
+}
+
+/* ---------- piezas compartidas del cuerpo ---------- */
+
+.hudc .hud-title {
+  margin: 0 0 5px;
+  font-family: var(--hud-mono);
+  font-size: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  color: var(--hud-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* rejilla común: visual a la izquierda, feed a la derecha */
+.hudc .hud-cols {
+  display: grid;
+  grid-template-columns: var(--hud-col) minmax(0, 1fr);
+  gap: var(--hud-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .hud-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* métrica al pie de una columna, rótulo y número en la misma línea */
+.hudc .hud-metric {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: auto 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--hud-rule);
+}
+
+.hudc .hud-metric-label {
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  color: var(--hud-faint);
+}
+
+.hudc .hud-metric-value {
+  margin-left: auto;
+  font-family: var(--headline-300-family, var(--hud-mono));
+  font-size: var(--hud-metric);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--hud-green);
+}
+
+/* feed de filas con marcador de color a la izquierda */
+.hudc .hud-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.hudc .hud-feed > li {
+  display: grid;
+  gap: 3px;
+  padding-left: 8px;
+  border-left: 2px solid var(--hud-rule);
+  min-width: 0;
+  opacity: 0;
+  transform: translateX(5px);
+  transition:
+    opacity var(--hud-ease),
+    transform var(--hud-ease);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .hud-feed > li {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: var(--d);
+}
+
+.hudc .hud-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hudc .hud-label {
+  font-family: var(--hud-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--hud-ink);
+}
+
+.hudc .hud-tag {
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  color: var(--hud-faint);
+}
+
+.hudc .hud-text {
+  font-size: 9.5px;
+  line-height: 1.35;
+  color: var(--hud-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .hud-feed > li {
+    transition: none;
+    transform: none;
+  }
+
+  .hudc .hudc-panel,
+  .hudc .hudc-face {
+    transition-duration: 0.01ms;
+  }
+}

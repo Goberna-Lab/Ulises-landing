@@ -1,0 +1,259 @@
+/* ---------------------------------------------------------------------------
+   COORDINACIÓN — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .uop-body {
+  display: grid;
+  grid-template-columns: var(--hud-col) minmax(0, 1fr);
+  gap: var(--hud-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .uop-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- minimapa ---------- */
+
+.hudc .uop-map {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .uop-district {
+  fill: rgba(24, 25, 24, 0.05);
+  stroke: rgba(24, 25, 24, 0.2);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* los distritos con brigada activa se tiñen del color de su brigada: es lo
+   que ata el mapa con el feed sin necesidad de rotular a 7px */
+.hudc .uop-district[data-team='a1'] {
+  fill: color-mix(in srgb, var(--hud-green) 14%, transparent);
+  stroke: color-mix(in srgb, var(--hud-green) 55%, transparent);
+}
+
+.hudc .uop-district[data-team='b3'] {
+  fill: color-mix(in srgb, var(--hud-gold) 22%, transparent);
+  stroke: rgba(140, 95, 10, 0.55);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-district {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+.hudc .uop-unit {
+  fill: rgba(24, 25, 24, 0.34);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-unit {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+/* ---------- rutas y puntos de luz ---------- */
+
+.hudc .uop-route[data-team='a1'] {
+  --c: var(--hud-green);
+}
+
+.hudc .uop-route[data-team='b3'] {
+  --c: #c8901a;
+}
+
+.hudc .uop-route-line {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1;
+  stroke-dasharray: 2 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.45s;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-route-line {
+  opacity: 0.6;
+}
+
+.hudc .uop-blip {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  /* pathLength=100 normaliza el recorrido: el punto tarda lo mismo en las
+     dos rutas aunque midan distinto */
+  stroke-dasharray: 2 98;
+  stroke-dashoffset: 100;
+  opacity: 0;
+}
+
+.hudc .uop-blip--halo {
+  stroke-width: 8;
+  opacity: 0;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-blip {
+  opacity: 1;
+  animation: uop-run 3.4s linear infinite 0.6s;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-blip--halo {
+  opacity: 0.22;
+}
+
+@keyframes uop-run {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- métrica ---------- */
+
+/* ---------- feed de brigadas ---------- */
+
+.hudc .uop-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hudc .uop-feed li {
+  display: grid;
+  gap: 5px;
+  padding-left: 9px;
+  border-left: 2px solid var(--hud-rule);
+  min-width: 0;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity var(--hud-ease),
+    transform var(--hud-ease);
+}
+
+.hudc .uop-feed li[data-team='a1'] {
+  border-left-color: var(--hud-green);
+}
+
+.hudc .uop-feed li[data-team='b3'] {
+  border-left-color: var(--hud-gold);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-feed li {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: var(--d);
+}
+
+.hudc .uop-brigade,
+.hudc .uop-route-name {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hudc .uop-name {
+  font-family: var(--hud-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--hud-ink);
+}
+
+.hudc .uop-status {
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--hud-faint);
+}
+
+.hudc .uop-feed li[data-team='a1'] .uop-status {
+  color: var(--hud-green);
+}
+
+.hudc .uop-feed li[data-team='b3'] .uop-status {
+  /* el oro puro no se lee como texto sobre blanco: 1.6:1 */
+  color: #8c5f0a;
+}
+
+.hudc .uop-route-name {
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--hud-soft);
+}
+
+.hudc .uop-route-name b {
+  font-family: var(--hud-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--hud-ink);
+}
+
+.hudc .uop-bar {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(24, 25, 24, 0.07);
+}
+
+/* `translateX(t - 100%)` deja visible t sin escalar: no deforma los extremos */
+.hudc .uop-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--hud-ink);
+  transform: translateX(-100%);
+  transition: transform 0.75s cubic-bezier(0.16, 0.84, 0.3, 1);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uop-bar-fill {
+  transform: translateX(calc(var(--t) - 100%));
+  transition-delay: 0.45s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .uop-district,
+  .hudc .uop-unit,
+  .hudc .uop-route-line,
+  .hudc .uop-feed li,
+  .hudc .uop-bar-fill {
+    transition: none;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uop-blip {
+    animation: none;
+    opacity: 0;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uop-blip--halo {
+    opacity: 0;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uop-feed li {
+    transform: none;
+  }
+}

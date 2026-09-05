@@ -1,0 +1,84 @@
+/* ---------------------------------------------------------------------------
+   ALERTAS — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .ual-bands {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .ual-base {
+  stroke: var(--hud-rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hudc .ual-band {
+  fill: rgba(24, 25, 24, 0.28);
+  opacity: 0;
+  /* crece desde el suelo: el origen va abajo, no al centro de la barra */
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0.2);
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s cubic-bezier(0.16, 0.84, 0.3, 1);
+}
+
+.hudc .ual-band[data-level='alta'] {
+  fill: var(--hud-red);
+}
+
+.hudc .ual-band[data-level='oport'] {
+  fill: var(--hud-green);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .ual-band {
+  opacity: 1;
+  transform: scaleY(1);
+  transition-delay: var(--d);
+}
+
+.hudc .ual-axis {
+  fill: var(--hud-faint);
+  font-family: var(--hud-mono);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+}
+
+.hudc .ual-open {
+  color: var(--hud-red);
+}
+
+/* el nivel tiñe la fila entera: marcador y etiqueta */
+.hudc .hud-feed > li[data-level='alta'] {
+  border-left-color: var(--hud-red);
+}
+
+.hudc .hud-feed > li[data-level='media'] {
+  border-left-color: var(--hud-gold);
+}
+
+.hudc .hud-feed > li[data-level='oport'] {
+  border-left-color: var(--hud-green);
+}
+
+.hudc .hud-feed > li[data-level='alta'] .ual-level {
+  color: var(--hud-red);
+}
+
+.hudc .hud-feed > li[data-level='media'] .ual-level {
+  /* el oro puro no se lee como texto sobre blanco: 1.6:1 */
+  color: #8c5f0a;
+}
+
+.hudc .hud-feed > li[data-level='oport'] .ual-level {
+  color: var(--hud-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .ual-band {
+    transition: none;
+    transform: none;
+  }
+}

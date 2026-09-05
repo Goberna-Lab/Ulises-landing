@@ -1,0 +1,104 @@
+/* ---------------------------------------------------------------------------
+   DATA UNIFICADA — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .uda-merge {
+  display: block;
+  overflow: visible;
+}
+
+/* el caudal se dibuja con el propio trazo: su grosor es el volumen */
+.hudc .uda-flow {
+  fill: none;
+  stroke-linecap: butt;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hudc .uda-flow[data-src='digital'] {
+  stroke: color-mix(in srgb, var(--hud-green) 46%, transparent);
+}
+
+.hudc .uda-flow[data-src='territorial'] {
+  stroke: rgba(138, 92, 51, 0.46);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uda-flow {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+.hudc .uda-out {
+  fill: var(--hud-ink);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0.2);
+  transition:
+    opacity 0.35s ease 0.42s,
+    transform 0.45s cubic-bezier(0.16, 0.84, 0.3, 1) 0.42s;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uda-out {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.hudc .uda-cap {
+  fill: var(--hud-faint);
+  font-family: var(--hud-mono);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+}
+
+/* ---------- ingesta ---------- */
+
+.hudc .hud-feed > li[data-src='digital'] {
+  border-left-color: var(--hud-green);
+}
+
+.hudc .hud-feed > li[data-src='territorial'] {
+  border-left-color: #8a5c33;
+}
+
+.hudc .uda-vol {
+  font-family: var(--hud-mono);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--hud-soft);
+}
+
+.hudc .uda-bar {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(24, 25, 24, 0.07);
+}
+
+/* `translateX(t - 100%)` deja visible t sin escalar: no deforma los extremos */
+.hudc .uda-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--hud-ink);
+  transform: translateX(-100%);
+  transition: transform 0.7s cubic-bezier(0.16, 0.84, 0.3, 1);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uda-bar-fill {
+  transform: translateX(calc(var(--t) - 100%));
+  transition-delay: 0.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .uda-flow,
+  .hudc .uda-bar-fill {
+    transition: none;
+  }
+
+  .hudc .uda-out {
+    transition: none;
+    transform: none;
+  }
+}

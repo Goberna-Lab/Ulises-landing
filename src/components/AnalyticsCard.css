@@ -1,0 +1,203 @@
+/* ---------------------------------------------------------------------------
+   ANALYTICS — contenido del panel. El chasis vive en HudCard.css.
+   Todo va scopeado bajo `.hudc` por la misma razón que allí: la tarjeta se
+   monta con la clase del host y sin scope `.dg-module p` le gana.
+--------------------------------------------------------------------------- */
+
+.hudc .uac-body {
+  display: grid;
+  grid-template-columns: var(--hud-col) minmax(0, 1fr);
+  gap: var(--hud-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .uac-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- gráfico de líneas ---------- */
+
+.hudc .uac-chart {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .uac-serie[data-tone='pos'] {
+  --c: var(--hud-green);
+}
+.hudc .uac-serie[data-tone='neu'] {
+  --c: #6b7280;
+}
+.hudc .uac-serie[data-tone='neg'] {
+  --c: var(--hud-red);
+}
+
+.hudc .uac-line {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uac-line {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.85s ease;
+  transition-delay: var(--d);
+}
+
+.hudc .uac-dot,
+.hudc .uac-serie-label {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hudc .uac-dot {
+  fill: var(--c);
+}
+
+.hudc .uac-serie-label {
+  fill: var(--c);
+  font-family: var(--hud-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .uac-dot,
+.hudc:is(:hover, :focus-visible, :focus-within) .uac-serie-label {
+  opacity: 1;
+  transition-delay: 0.75s;
+}
+
+/* ---------- temas clave ---------- */
+
+.hudc .uac-topics {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  /* más hueco entre filas que dentro de cada una: si no, la barra parece
+     pertenecer al tema de abajo */
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .uac-topics li {
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .uac-topic {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 0 0 0 9px;
+  box-sizing: border-box;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  /* el marcador de activo, en oro: es el único sitio donde el acento tiene
+     área suficiente para leerse sobre blanco */
+  border-left: 2px solid var(--hud-rule);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.hudc .uac-topic[aria-pressed='true'] {
+  border-left-color: var(--hud-gold);
+}
+
+.hudc .uac-topic:focus-visible {
+  outline: 2px solid var(--hud-ink);
+  outline-offset: 2px;
+}
+
+.hudc .uac-topic-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hudc .uac-tag {
+  font-family: var(--hud-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  color: var(--hud-soft);
+  transition: color 0.2s ease;
+}
+
+.hudc .uac-topic[aria-pressed='true'] .uac-tag {
+  color: var(--hud-ink);
+}
+
+.hudc .uac-traction {
+  font-family: var(--hud-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--hud-green);
+}
+
+.hudc .uac-meter {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(24, 25, 24, 0.07);
+}
+
+.hudc .uac-meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--hud-faint);
+  transform: translateX(-100%);
+  transition:
+    transform 0.75s cubic-bezier(0.16, 0.84, 0.3, 1),
+    background-color 0.2s ease;
+}
+
+.hudc .uac-topic[aria-pressed='true'] .uac-meter-fill {
+  background: var(--hud-ink);
+}
+
+/* `translateX(t - 100%)` deja visible t sin escalar: no deforma los extremos */
+.hudc:is(:hover, :focus-visible, :focus-within) .uac-meter-fill {
+  transform: translateX(calc(var(--t) - 100%));
+  transition-delay: 0.25s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .uac-meter-fill {
+    transition-duration: 0.01ms;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uac-line {
+    transition: none;
+    stroke-dashoffset: 0;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .uac-dot,
+  .hudc:is(:hover, :focus-visible, :focus-within) .uac-serie-label {
+    transition: none;
+    transition-delay: 0s;
+  }
+}

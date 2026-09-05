@@ -1,0 +1,235 @@
+/* ---------------------------------------------------------------------------
+   DECISIONES — contenido del panel. El chasis vive en HudCard.css.
+--------------------------------------------------------------------------- */
+
+.hudc .ude-body {
+  display: grid;
+  grid-template-columns: var(--hud-col) minmax(0, 1fr);
+  gap: var(--hud-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.hudc .ude-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- matriz ---------- */
+
+.hudc .ude-matrix {
+  display: block;
+  overflow: visible;
+}
+
+.hudc .ude-axis {
+  stroke: var(--hud-rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hudc .ude-quad {
+  fill: var(--hud-faint);
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .ude-quad {
+  opacity: 1;
+}
+
+/* el cuadrante manda el color: si la data mueve el tema, el color le sigue */
+.hudc .ude-item[data-quad='crecer'] {
+  --c: #8c5f0a;
+  --dot: var(--hud-gold);
+}
+
+.hudc .ude-item[data-quad='defender'] {
+  --c: var(--hud-green);
+  --dot: var(--hud-green);
+}
+
+.hudc .ude-item[data-quad='sostener'],
+.hudc .ude-item[data-quad='observar'] {
+  --c: var(--hud-faint);
+  --dot: rgba(24, 25, 24, 0.34);
+}
+
+.hudc .ude-item {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .ude-item {
+  opacity: 1;
+  transition-delay: var(--d);
+}
+
+.hudc .ude-pt {
+  fill: var(--dot);
+  stroke: rgba(24, 25, 24, 0.5);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+  /* el punto se mueve solo con cambiar u/i: la transición está aquí para
+     cuando la data llegue en vivo */
+  transition:
+    cx 0.6s cubic-bezier(0.2, 0.7, 0.3, 1),
+    cy 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.hudc .ude-halo {
+  fill: var(--dot);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.5);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hudc .ude-item[data-active] .ude-halo {
+  opacity: 0.18;
+  transform: scale(1);
+}
+
+.hudc .ude-pt-label {
+  fill: var(--c);
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+.hudc .ude-item[data-active] .ude-pt-label {
+  opacity: 1;
+}
+
+/* ---------- prioridades ---------- */
+
+.hudc .ude-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.hudc .ude-feed li {
+  display: grid;
+  gap: 3px;
+  padding-left: 9px;
+  border-left: 2px solid var(--hud-rule);
+  min-width: 0;
+  cursor: default;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity var(--hud-ease),
+    transform var(--hud-ease),
+    border-color 0.2s ease;
+}
+
+.hudc .ude-feed li[data-quad='crecer'] {
+  border-left-color: var(--hud-gold);
+}
+
+.hudc .ude-feed li[data-quad='defender'] {
+  border-left-color: var(--hud-green);
+}
+
+.hudc:is(:hover, :focus-visible, :focus-within) .ude-feed li {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: var(--d);
+}
+
+.hudc .ude-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hudc .ude-quad-name {
+  font-family: var(--hud-mono);
+  font-size: 7.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.hudc .ude-feed li[data-quad='crecer'] .ude-quad-name {
+  /* el oro puro no se lee como texto sobre blanco: 1.6:1 */
+  color: #8c5f0a;
+}
+
+.hudc .ude-feed li[data-quad='defender'] .ude-quad-name {
+  color: var(--hud-green);
+}
+
+.hudc .ude-tag {
+  font-family: var(--hud-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--hud-faint);
+}
+
+.hudc .ude-action {
+  font-size: 9.5px;
+  line-height: 1.35;
+  color: var(--hud-ink);
+}
+
+/* ---------- acción ejecutiva ---------- */
+
+.hudc .ude-exec {
+  margin: auto 0 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--hud-rule);
+  display: grid;
+  gap: 4px;
+}
+
+.hudc .ude-exec .hud-title {
+  margin: 0;
+}
+
+.hudc .ude-exec-line {
+  font-size: 9.5px;
+  line-height: 1.35;
+  color: var(--hud-soft);
+}
+
+.hudc .ude-exec-line b {
+  font-family: var(--hud-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--hud-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc .ude-quad,
+  .hudc .ude-item,
+  .hudc .ude-pt,
+  .hudc .ude-halo,
+  .hudc .ude-pt-label,
+  .hudc .ude-feed li {
+    transition: none;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .ude-feed li {
+    transform: none;
+  }
+}
