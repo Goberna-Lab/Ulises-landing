@@ -196,6 +196,15 @@ const T = {
 /* La fase viaja como custom property: animation-delay no se hereda, pero una
    variable sí, y así los ::before/::after de cada nodo entran en el mismo
    compás que su cable. */
+/* La posición viaja como custom property, no como `left`/`top` en línea: un
+   estilo en línea no se puede sobreescribir desde una media query, y en móvil
+   necesitamos que las tarjetas dejen de estar posicionadas y fluyan. */
+const at = (x: number | null, y: number) => {
+  const vars: Record<string, string> = { '--y': `${y}px` }
+  if (x !== null) vars['--x'] = `${x}px`
+  return vars as CSSProperties
+}
+
 const phase = (seconds: number) => ({ '--phase': `${seconds}s` }) as CSSProperties
 
 function Diagram() {
@@ -217,7 +226,7 @@ function Diagram() {
     <div
       className={`dg-rail-item dg-rail-item--${tone}`}
       key={item.label}
-      style={{ top: `${y}px`, ...phase(seconds) }}
+      style={{ ...at(null, y), ...phase(seconds) }}
     >
       <Icon name={item.icon} />
       <span>{item.label}</span>
@@ -299,7 +308,7 @@ function Diagram() {
 
               <p
                 className="dg-rail-title dg-rail-title--territorial"
-                style={{ top: `${TERRITORIAL_TITLE_Y}px` }}
+                style={at(null, TERRITORIAL_TITLE_Y)}
               >
                 Fuentes territoriales
               </p>
@@ -330,48 +339,45 @@ function Diagram() {
 
               <AnalyticsCard
                 className="dg-module"
-                style={{ left: `${isoX(0, 1)}px`, top: `${isoY(0, 1)}px` }}
+                style={{ ...at(isoX(0, 1), isoY(0, 1)) }}
               />
               <AiCard
                 className="dg-module"
                 style={{
-                  left: `${isoX(0, 0)}px`,
-                  top: `${isoY(0, 0)}px`,
+                  ...at(isoX(0, 0), isoY(0, 0)),
                   ...phase(T.toCore),
                 }}
               />
               <KnowledgeCard
                 className="dg-module"
-                style={{ left: `${isoX(1, 2)}px`, top: `${isoY(1, 2)}px` }}
+                style={{ ...at(isoX(1, 2), isoY(1, 2)) }}
               />
               <OpsCard
                 className="dg-module"
-                style={{ left: `${isoX(2, 1)}px`, top: `${isoY(2, 1)}px` }}
+                style={{ ...at(isoX(2, 1), isoY(2, 1)) }}
               />
               <DecisionsCard
                 className="dg-module"
                 style={{
-                  left: `${isoX(2, 0)}px`,
-                  top: `${isoY(2, 0)}px`,
+                  ...at(isoX(2, 0), isoY(2, 0)),
                   ...phase(T.exit),
                 }}
               />
 
               <AlertsCard
                 className="dg-module"
-                style={{ left: `${isoX(1, 0)}px`, top: `${isoY(1, 0)}px` }}
+                style={{ ...at(isoX(1, 0), isoY(1, 0)) }}
               />
               <DataCard
                 className="dg-module"
                 style={{
-                  left: `${isoX(0, 2)}px`,
-                  top: `${isoY(0, 2)}px`,
+                  ...at(isoX(0, 2), isoY(0, 2)),
                   ...phase(T.entry),
                 }}
               />
               <CoreCard
                 className="dg-module dg-module--core"
-                style={{ left: `${isoX(1, 1)}px`, top: `${isoY(1, 1)}px`, ...phase(T.core) }}
+                style={{ ...at(isoX(1, 1), isoY(1, 1)), ...phase(T.core) }}
               />
             </div>
 

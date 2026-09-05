@@ -301,3 +301,74 @@
     transition-duration: 0.01ms;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE
+
+   En táctil no hay hover y un panel flotante de 356px no cabe en un móvil de
+   402px: se saldría de pantalla al anclarse sobre una tarjeta descentrada.
+   Aquí el panel se despliega DENTRO de la tarjeta, empujando el contenido.
+   Se abre al tocar porque la tarjeta es enfocable (`tabIndex`).
+--------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .hudc .hudc-panel {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    transform: none;
+    box-shadow: none;
+    border-color: var(--hud-rule);
+    /* `display` en vez de opacidad: cerrado no debe ocupar sitio ni recibir
+       foco desde el teclado */
+    display: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hudc:is(:hover, :focus-visible, :focus-within) .hudc-panel {
+    display: grid;
+    transform: none;
+  }
+
+  /* la cara se queda: es el título de lo que se acaba de abrir */
+  .hudc:is(:hover, :focus-visible, :focus-within) .hudc-face {
+    opacity: 1;
+  }
+
+  .hudc.hudc:is(:hover, :focus-visible, :focus-within) {
+    z-index: auto;
+  }
+
+  .hudc .hudc-corners {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .hudc {
+    --hud-gap: 12px;
+  }
+
+  /* El visual y el feed no caben lado a lado. Cada tarjeta define su propia
+     rejilla además de la compartida `.hud-cols`, así que hay que apilarlas
+     todas: si no, las cinco con rejilla propia seguirían en dos columnas.
+     La clase repetida sube la especificidad a (0,3,0) a propósito: la regla
+     original de cada tarjeta empata en (0,2,0) y, al cargarse después, ganaría
+     ella. */
+  .hudc.hudc .hud-cols,
+  .hudc.hudc .uac-body,
+  .hudc.hudc .uai-body,
+  .hudc.hudc .ukb-body,
+  .hudc.hudc .uop-body,
+  .hudc.hudc .ude-body {
+    grid-template-columns: 1fr;
+  }
+
+  .hudc .hudc-sys {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    white-space: normal;
+  }
+}

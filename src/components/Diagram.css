@@ -325,6 +325,12 @@
   letter-spacing: 0.2em;
 }
 
+/* el rótulo territorial va entre los dos bloques: su `top` llega por variable
+   para poder anularlo en la vista vertical */
+.dg-rail-title--territorial {
+  top: var(--y);
+}
+
 .dg-rail--in .dg-rail-title {
   left: 0;
 }
@@ -352,6 +358,7 @@
 
 .dg-rail-item {
   position: absolute;
+  top: var(--y);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -491,6 +498,8 @@
   --accent: var(--digital);
   position: absolute;
   z-index: 2;
+  left: var(--x);
+  top: var(--y);
   width: 142px;
   height: 86px;
   margin: -43px 0 0 -71px;
@@ -959,5 +968,221 @@
   position: relative;
   z-index: 1;
     padding: 80px 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE
+
+   Por debajo de 1100px el rombo isométrico deja de funcionar: encogerlo haría
+   el texto ilegible (11px × 0.4 = 4px) y dejarlo obliga a scroll horizontal.
+   En su lugar el diagrama pasa a un flujo vertical que cuenta lo mismo:
+   fuentes → data unificada → módulos → núcleo → decisiones → resultados.
+
+   Las tarjetas dejan de estar posicionadas y fluyen. `left`/`top` salen de
+   `--x`/`--y` justo para poder anularlos aquí; en línea no se podría.
+--------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .diagram {
+    padding: 72px 0;
+  }
+
+  .diagram-scroll {
+    overflow-x: visible;
+    padding: 0 20px;
+  }
+
+  .diagram-canvas {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .dg-body {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  /* describen un recorrido horizontal que aquí ya no existe */
+  .dg-wires,
+  .dg-spine,
+  .dg-plate {
+    display: none;
+  }
+
+  /* ---- rieles como listas ---- */
+
+  .dg-rail {
+    position: static;
+    width: auto;
+    order: 1;
+  }
+
+  .dg-rail--out {
+    order: 3;
+    text-align: left;
+  }
+
+  .dg-rail-title {
+    position: static;
+    margin: 0 0 12px;
+  }
+
+  .dg-rail-title--territorial {
+    margin-top: 20px;
+  }
+
+  .dg-rail-item {
+    position: static;
+    transform: none;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .dg-rail--out .dg-rail-item {
+    flex-direction: row;
+  }
+
+  .dg-rail-item .dg-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* ---- módulos en columna ---- */
+
+  .dg-core {
+    position: static;
+    order: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .dg-module {
+    /* `relative` y no `static`: el panel del chasis se ancla a la tarjeta */
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    min-height: 78px;
+    margin: 0;
+    z-index: auto;
+  }
+
+  /* Orden narrativo: entra el dato, se procesa, sale la decisión. Cuatro
+     tarjetas no llevan `data-node`, así que se identifican por el contenido
+     de su panel; sin esto se quedaban en `order: 0` y salían las primeras. */
+  .dg-module[data-node='entry'] {
+    order: 1;
+  }
+  .dg-module[data-node='ai'] {
+    order: 2;
+  }
+  .dg-module:has(.uac-body) {
+    order: 3;
+  }
+  .dg-module:has(.ual-bands) {
+    order: 4;
+  }
+  .dg-module:has(.ukb-body) {
+    order: 5;
+  }
+  .dg-module:has(.uop-body) {
+    order: 6;
+  }
+  .dg-module[data-node='core'] {
+    order: 8;
+  }
+  .dg-module[data-node='exit'] {
+    order: 9;
+  }
+
+  .dg-module--core {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* sin desplazamiento al abrir: en táctil no hay hover que lo justifique */
+  .dg-module:is(:hover, :focus-visible) {
+    transform: none;
+    z-index: auto;
+  }
+
+  .dg-core:has(.dg-module:is(:hover, :focus-visible))
+    .dg-module:not(:hover, :focus-visible, .dg-module--core) {
+    opacity: 1;
+  }
+
+  /* ---- dominios y base ---- */
+
+  .dg-domains {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-chips {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dg-foundations {
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 0;
+  }
+
+  .dg-foundations li:first-child {
+    padding-left: 24px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .dg-foundations li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .diagram {
+    padding: 56px 0;
+  }
+
+  .diagram-scroll {
+    padding: 0 16px;
+  }
+
+  .dg-wordmark {
+    font-size: 2.1rem;
+  }
+
+  .dg-kicker,
+  .dg-tagline {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  /* tres pasos en una fila no caben: se apilan */
+  .dg-flow {
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    font-size: 10px;
+  }
+
+  .dg-flow i {
+    width: 24px;
+  }
+
+  .dg-chips {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dg-foundations {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-foundations li,
+  .dg-foundations li:first-child {
+    padding-left: 0;
+    border-left: 0;
   }
 }
